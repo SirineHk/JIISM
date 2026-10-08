@@ -1,0 +1,286 @@
+<div class="p-6 lg:p-8">
+
+  <!-- Header -->
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-slate-900">
+      Assignations éditoriales
+    </h1>
+
+    <p class="text-sm text-slate-500 mt-1">
+      Assignez les articles aux éditeurs et suivez leur cycle.
+    </p>
+  </div>
+
+
+  <!-- Statistiques -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+
+    <!-- À assigner -->
+    <div class="rounded-2xl bg-orange-50 p-5">
+      <div class="text-xs text-orange-600 font-bold">
+        À ASSIGNER
+      </div>
+
+      <div class="text-3xl font-bold text-orange-800 mt-2">
+        {{ pendingCount }}
+      </div>
+    </div>
+
+
+    <!-- En révision -->
+    <div class="rounded-2xl bg-violet-50 p-5">
+      <div class="text-xs text-violet-600 font-bold">
+        EN RÉVISION
+      </div>
+
+      <div class="text-3xl font-bold text-violet-800 mt-2">
+        {{ reviewCount }}
+      </div>
+    </div>
+
+
+    <!-- Terminées -->
+    <div class="rounded-2xl bg-emerald-50 p-5">
+      <div class="text-xs text-emerald-600 font-bold">
+        TERMINÉES
+      </div>
+
+      <div class="text-3xl font-bold text-emerald-800 mt-2">
+        {{ completedCount }}
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- Articles à assigner -->
+  <div class="mb-8">
+
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h2 class="text-lg font-bold text-slate-900">
+          Articles à assigner
+        </h2>
+
+        <p class="text-sm text-slate-500">
+          Articles en attente d'une affectation à un éditeur.
+        </p>
+      </div>
+
+      <span
+        class="px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-orange-700">
+        {{ pendingCount }} article(s)
+      </span>
+    </div>
+
+
+    <!-- Articles PENDING -->
+    <div class="space-y-3">
+
+      @for (article of pendingArticles; track article.id) {
+
+  <div
+    class="bg-white border border-orange-100 rounded-2xl p-5 shadow-sm">
+
+    <div class="flex flex-col md:flex-row md:items-center gap-4">
+
+      <div
+        class="w-11 h-11 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center">
+        📝
+      </div>
+
+      <div class="flex-1">
+
+        <div class="font-semibold text-slate-800">
+          {{ article.title }}
+        </div>
+
+        <div class="text-xs text-slate-400 mt-1">
+          Auteur :
+          {{ article.submittedBy?.username || 'Non renseigné' }}
+          · Statut : PENDING
+        </div>
+
+      </div>
+
+      <span
+        class="px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-orange-700">
+        En attente
+      </span>
+
+    </div>
+
+
+    <!-- Zone d'assignation -->
+
+    <div class="mt-5 pt-5 border-t border-slate-100">
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+        <!-- Éditeur -->
+
+        <div>
+
+          <label
+            class="block text-xs font-bold text-slate-600 mb-2">
+            Éditeur
+          </label>
+
+          <select
+            [(ngModel)]="selectedEditor[article.id]"
+            class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm">
+
+            <option [ngValue]="null">
+              Sélectionner un éditeur
+            </option>
+
+            @for (editor of editors; track editor.id) {
+
+              <option [ngValue]="editor.id">
+                {{ editor.username }}
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+
+        <!-- Échéance -->
+
+        <div>
+
+          <label
+            class="block text-xs font-bold text-slate-600 mb-2">
+            Échéance
+          </label>
+
+          <input
+            type="date"
+            [(ngModel)]="dueDates[article.id]"
+            class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm">
+
+        </div>
+
+
+        <!-- Bouton -->
+
+        <div class="flex items-end">
+
+          <button
+            type="button"
+            (click)="assignArticle(article)"
+            [disabled]="assigning[article.id]"
+            class="w-full rounded-xl bg-indigo-600 text-white px-4 py-2 text-sm font-bold hover:bg-indigo-700 disabled:opacity-50">
+
+            @if (assigning[article.id]) {
+              Assignation...
+            } @else {
+              Assigner l'article
+            }
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+}
+
+
+      <!-- Aucun article -->
+      @if (pendingArticles.length === 0) {
+
+        <div
+          class="bg-white border border-slate-100 rounded-2xl p-6 text-center text-sm text-slate-500">
+
+          Aucun article en attente d'assignation.
+
+        </div>
+
+      }
+
+    </div>
+
+  </div>
+
+
+  <!-- Flux éditorial -->
+  <div>
+
+    <div class="mb-4">
+
+      <h2 class="text-lg font-bold text-slate-900">
+        Flux éditorial
+      </h2>
+
+      <p class="text-sm text-slate-500">
+        Suivi des articles déjà assignés aux éditeurs.
+      </p>
+
+    </div>
+
+
+    <div class="space-y-3">
+
+      @for (x of items; track x.id) {
+
+        <div
+          class="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm flex flex-col md:flex-row md:items-center gap-4">
+
+          <div
+            class="w-11 h-11 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center">
+            📝
+          </div>
+
+
+          <div class="flex-1">
+
+            <div class="font-semibold text-slate-800">
+              {{ x.article?.title }}
+            </div>
+
+            <div class="text-xs text-slate-400 mt-1">
+              Éditeur :
+              {{ x.editor?.username || 'Non renseigné' }}
+
+              · Échéance :
+              {{ x.dueDate | date:'dd/MM/yyyy' }}
+            </div>
+
+          </div>
+
+
+          <span
+            class="px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700">
+
+            {{ label(x.status) }}
+
+          </span>
+
+        </div>
+
+      }
+
+
+      <!-- Aucune assignation -->
+      @if (items.length === 0) {
+
+        <div
+          class="bg-white border border-slate-100 rounded-2xl p-6 text-center text-sm text-slate-500">
+
+          Aucune assignation éditoriale.
+
+        </div>
+
+      }
+
+    </div>
+
+  </div>
+
+</div>

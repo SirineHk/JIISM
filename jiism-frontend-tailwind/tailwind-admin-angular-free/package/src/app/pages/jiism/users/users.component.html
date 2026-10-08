@@ -1,0 +1,382 @@
+<div class="p-6 lg:p-8">
+
+  <!-- HEADER -->
+  <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+    <div>
+      <h1 class="text-2xl font-bold text-slate-900">
+        Utilisateurs
+      </h1>
+
+      <p class="text-sm text-slate-500 mt-1">
+        Administration des comptes et des rôles JIISM.
+      </p>
+    </div>
+
+    <!-- AJOUT -->
+    <button
+      type="button"
+      (click)="openAddModal()"
+      class="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-700 transition"
+    >
+      + Ajouter un utilisateur
+    </button>
+
+  </div>
+
+
+  <!-- CHARGEMENT -->
+  @if (loading) {
+
+    <div class="bg-white rounded-2xl border border-slate-100 p-6">
+      <p class="text-sm text-slate-500">
+        Chargement des utilisateurs...
+      </p>
+    </div>
+
+  }
+
+
+  <!-- ERREUR -->
+  @if (!loading && error) {
+
+    <div class="bg-red-50 border border-red-200 rounded-2xl p-5">
+      <p class="text-sm text-red-600">
+        {{ error }}
+      </p>
+    </div>
+
+  }
+
+
+  <!-- LISTE -->
+  @if (!loading && !error) {
+
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+
+      @for (u of users; track u.id) {
+
+        <div
+          class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5"
+        >
+
+          <!-- USER -->
+          <div class="flex items-center gap-4">
+
+            <div
+              class="w-12 h-12 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold"
+            >
+              {{ (u.firstName || u.username).charAt(0).toUpperCase() }}
+            </div>
+
+            <div class="min-w-0">
+
+              <div class="font-bold text-slate-800 truncate">
+                {{ u.firstName }} {{ u.lastName }}
+              </div>
+
+              <div class="text-xs text-slate-400 truncate">
+                {{ u.email }}
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- ROLE -->
+          <div class="mt-5">
+
+            <label class="block text-xs font-semibold text-slate-500 mb-2">
+              Rôle
+            </label>
+
+            <select
+              [ngModel]="u.roles && u.roles.length > 0 ? u.roles[0] : 'AUTEUR'"
+              (ngModelChange)="changeRole(u, $event)"
+              class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700 outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+
+              @for (role of roles; track role) {
+
+                <option [value]="role">
+                  {{ role }}
+                </option>
+
+              }
+
+            </select>
+
+          </div>
+
+
+          <!-- USERNAME -->
+          <div class="mt-3 text-xs text-slate-400">
+            Username :
+            <span class="font-semibold text-slate-600">
+              {{ u.username }}
+            </span>
+          </div>
+
+
+          <!-- ACTIONS -->
+          <div class="mt-5 flex gap-2">
+
+            <button
+              type="button"
+              (click)="openEditModal(u)"
+              class="flex-1 rounded-xl bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-200 transition"
+            >
+              ✏️ Modifier
+            </button>
+
+            <button
+              type="button"
+              (click)="deleteUser(u)"
+              class="rounded-xl bg-red-50 px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-100 transition"
+            >
+              🗑️
+            </button>
+
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+
+    <!-- AUCUN UTILISATEUR -->
+    @if (users.length === 0) {
+
+      <div class="bg-white rounded-2xl border border-slate-100 p-6 mt-5">
+
+        <p class="text-sm text-slate-500">
+          Aucun utilisateur trouvé.
+        </p>
+
+      </div>
+
+    }
+
+  }
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- MODAL AJOUT / MODIFICATION -->
+<!-- ========================================================= -->
+
+@if (showModal) {
+
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
+  >
+
+    <div
+      class="w-full max-w-lg rounded-2xl bg-white shadow-xl"
+    >
+
+      <!-- HEADER MODAL -->
+      <div
+        class="flex items-center justify-between border-b border-slate-100 px-6 py-4"
+      >
+
+        <div>
+
+          <h2 class="text-lg font-bold text-slate-900">
+            {{ editMode ? 'Modifier un utilisateur' : 'Ajouter un utilisateur' }}
+          </h2>
+
+          <p class="text-xs text-slate-400 mt-1">
+            {{ editMode
+              ? 'Modifier les informations du compte.'
+              : 'Créer un nouveau compte utilisateur.'
+            }}
+          </p>
+
+        </div>
+
+        <button
+          type="button"
+          (click)="closeModal()"
+          class="text-slate-400 hover:text-slate-700 text-xl"
+        >
+          ✕
+        </button>
+
+      </div>
+
+
+      <!-- FORM -->
+      <div class="p-6 space-y-4">
+
+        <!-- USERNAME -->
+        <div>
+
+          <label class="block text-xs font-semibold text-slate-600 mb-1">
+            Username *
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="formUser.username"
+            class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="username"
+          >
+
+        </div>
+
+
+        <!-- EMAIL -->
+        <div>
+
+          <label class="block text-xs font-semibold text-slate-600 mb-1">
+            Email *
+          </label>
+
+          <input
+            type="email"
+            [(ngModel)]="formUser.email"
+            class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="email@example.com"
+          >
+
+        </div>
+
+
+        <!-- PRENOM / NOM -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <div>
+
+            <label class="block text-xs font-semibold text-slate-600 mb-1">
+              Prénom
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="formUser.firstName"
+              class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="Prénom"
+            >
+
+          </div>
+
+
+          <div>
+
+            <label class="block text-xs font-semibold text-slate-600 mb-1">
+              Nom
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="formUser.lastName"
+              class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="Nom"
+            >
+
+          </div>
+
+        </div>
+
+
+        <!-- TELEPHONE -->
+        <div>
+
+          <label class="block text-xs font-semibold text-slate-600 mb-1">
+            Téléphone
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="formUser.phone"
+            class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="Téléphone"
+          >
+
+        </div>
+
+
+        <!-- PASSWORD -->
+        <div>
+
+          <label class="block text-xs font-semibold text-slate-600 mb-1">
+
+            Mot de passe
+            @if (editMode) {
+              <span class="text-slate-400 font-normal">
+                (laisser vide pour conserver)
+              </span>
+            }
+
+          </label>
+
+          <input
+            type="password"
+            [(ngModel)]="formUser.password"
+            class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="Mot de passe"
+          >
+
+        </div>
+
+
+        <!-- ROLE -->
+        <div>
+
+          <label class="block text-xs font-semibold text-slate-600 mb-1">
+            Rôle
+          </label>
+
+          <select
+            [(ngModel)]="formUser.roles[0]"
+            class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+
+            @for (role of roles; track role) {
+
+              <option [value]="role">
+                {{ role }}
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- FOOTER -->
+      <div
+        class="flex justify-end gap-3 border-t border-slate-100 px-6 py-4"
+      >
+
+        <button
+          type="button"
+          (click)="closeModal()"
+          class="rounded-xl bg-slate-100 px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-200 transition"
+        >
+          Annuler
+        </button>
+
+        <button
+          type="button"
+          (click)="saveUser()"
+          class="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 transition"
+        >
+          {{ editMode ? 'Enregistrer' : 'Créer l’utilisateur' }}
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}

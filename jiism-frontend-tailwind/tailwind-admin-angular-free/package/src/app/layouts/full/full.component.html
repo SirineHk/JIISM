@@ -1,0 +1,52 @@
+<span [dir]="options.dir!">
+  <mat-sidenav-container class="mainWrapper blue_theme light-theme" autosize autoFocus dir="ltr">
+    <!-- ============================================================== -->
+    <!-- Vertical Sidebar -->
+    <!-- ============================================================== -->
+
+    <mat-sidenav #leftsidenav [mode]="isOver ? 'over' : 'side'" [opened]="!isOver"
+      (openedChange)="onSidenavOpenedChange($event)" (closedStart)="onSidenavClosedStart()" class="sidebarNav">
+      <div class="flex-layout flex flex-col h-full">
+        <app-sidebar (toggleMobileNav)="sidenav.toggle()" [showToggle]="isOver"></app-sidebar>
+        <ng-scrollbar class="relative" style="height: 100%">
+          <mat-nav-list class="sidebar-list">
+            @for(item of navItems; track item) {
+            <app-nav-item [item]="item" (notify)="sidenav.toggle()" class="top-parent">
+            </app-nav-item>
+            }
+          </mat-nav-list>
+        </ng-scrollbar>
+        <div class="p-5">
+          <div class="rounded-2xl bg-indigo-50 p-5">
+            <div class="text-xs font-bold text-indigo-700 uppercase tracking-wider">JIISM</div>
+            <p class="text-xs text-slate-500 mt-2 leading-5">Plateforme de gestion éditoriale scientifique.</p>
+            <a routerLink="/publications" class="inline-block mt-3 rounded-lg bg-indigo-600 text-white px-3 py-2 text-xs font-semibold">Voir le portail public</a>
+          </div>
+        </div>
+      </div>
+    </mat-sidenav>
+
+    <!-- ============================================================== -->
+    <!-- Main Content -->
+    <!-- ============================================================== -->
+    <mat-sidenav-content class="contentWrapper" #content>
+
+      <app-header [showToggle]="!isOver" (toggleCollapsed)="toggleCollapsed()" (toggleMobileNav)="sidenav.toggle()"
+        (toggleMobileFilterNav)="toggleFilterNav()" (optionsChange)="receiveOptions($event)"></app-header>
+
+      <main class="pageWrapper" [ngClass]="{
+          maxWidth: options.boxed
+        }">
+
+        <!-- ============================================================== -->
+        <!-- Outlet -->
+        <!-- ============================================================== -->
+        <router-outlet></router-outlet>
+      </main>
+
+      <footer class="text-center text-muted pt-2.5 pb-6 text-xs">JIISM · Journal scientifique · Plateforme de gestion éditoriale</footer>
+
+    </mat-sidenav-content>
+
+  </mat-sidenav-container>
+</span>

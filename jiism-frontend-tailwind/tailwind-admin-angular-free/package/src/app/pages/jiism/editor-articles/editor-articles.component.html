@@ -1,0 +1,637 @@
+﻿<div class="p-6 lg:p-8">
+
+  <!-- HEADER -->
+  <div class="mb-8">
+
+    <span
+      class="inline-flex items-center rounded-full
+             bg-indigo-50 text-indigo-700
+             px-3 py-1 text-xs font-bold tracking-wide">
+
+      JIISM · ESPACE ÉDITEUR
+
+    </span>
+
+    <h1
+      class="text-2xl lg:text-3xl font-bold
+             text-slate-900 mt-4">
+
+      Mes articles
+
+    </h1>
+
+    <p class="text-sm text-slate-500 mt-2">
+
+      Consultez les articles qui vous sont confiés
+      et suivez leur état d'avancement.
+
+    </p>
+
+  </div>
+
+
+  <!-- STATISTIQUES -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-5 mb-8">
+
+
+    <div
+      class="rounded-2xl bg-white
+             border border-slate-100
+             shadow-sm p-5">
+
+      <div
+        class="text-xs font-bold
+               text-slate-400 tracking-wide">
+
+        TOTAL
+
+      </div>
+
+      <div
+        class="text-3xl font-bold
+               text-slate-900 mt-2">
+
+        {{ stats.total }}
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="rounded-2xl bg-orange-50
+             border border-orange-100 p-5">
+
+      <div
+        class="text-xs font-bold
+               text-orange-600 tracking-wide">
+
+        À TRAITER
+
+      </div>
+
+      <div
+        class="text-3xl font-bold
+               text-orange-800 mt-2">
+
+        {{ stats.assigned }}
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="rounded-2xl bg-violet-50
+             border border-violet-100 p-5">
+
+      <div
+        class="text-xs font-bold
+               text-violet-600 tracking-wide">
+
+        EN RÉVISION
+
+      </div>
+
+      <div
+        class="text-3xl font-bold
+               text-violet-800 mt-2">
+
+        {{ stats.review }}
+
+      </div>
+
+    </div>
+
+
+    <div
+      class="rounded-2xl bg-emerald-50
+             border border-emerald-100 p-5">
+
+      <div
+        class="text-xs font-bold
+               text-emerald-600 tracking-wide">
+
+        TERMINÉS
+
+      </div>
+
+      <div
+        class="text-3xl font-bold
+               text-emerald-800 mt-2">
+
+        {{ stats.completed }}
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- RECHERCHE + FILTRE -->
+  <div
+    class="bg-white border border-slate-100
+           rounded-2xl shadow-sm p-5 mb-6">
+
+    <div
+      class="flex flex-col md:flex-row
+             gap-4">
+
+
+      <input
+        type="text"
+        [(ngModel)]="search"
+        placeholder="Rechercher un article ou un auteur..."
+        class="flex-1 rounded-xl
+               border border-slate-200
+               px-4 py-3 text-sm
+               focus:outline-none
+               focus:ring-2
+               focus:ring-indigo-500">
+
+
+      <select
+        [(ngModel)]="filter"
+        class="rounded-xl
+               border border-slate-200
+               px-4 py-3 text-sm
+               focus:outline-none
+               focus:ring-2
+               focus:ring-indigo-500">
+
+        <option value="ALL">
+          Tous les statuts
+        </option>
+
+        <option value="ASSIGNED">
+          À traiter
+        </option>
+
+        <option value="IN_REVIEW">
+          En révision
+        </option>
+
+        <option value="COMPLETED">
+          Terminés
+        </option>
+
+        <option value="ACCEPTED">
+          Acceptés
+        </option>
+
+        <option value="REJECTED">
+          Rejetés
+        </option>
+        <option value="PUBLISHED">
+          Publiés
+        </option>
+
+      </select>
+
+    </div>
+
+  </div>
+
+
+  <!-- CHARGEMENT -->
+  @if (loading) {
+
+    <div
+      class="bg-white rounded-2xl
+             border border-slate-100
+             p-10 text-center">
+
+      <div class="text-sm text-slate-500">
+
+        Chargement de vos articles...
+
+      </div>
+
+    </div>
+
+  }
+
+
+  <!-- ERREUR -->
+  @if (!loading && error) {
+
+    <div
+      class="bg-red-50 border border-red-200
+             rounded-2xl p-6
+             text-red-700">
+
+      {{ error }}
+
+    </div>
+
+  }
+
+
+  <!-- ARTICLES -->
+  @if (!loading && !error) {
+
+    <div class="space-y-4">
+
+
+      @for (
+        article of filtered;
+        track article.id
+      ) {
+
+        <article
+          class="bg-white
+                 border border-slate-100
+                 rounded-2xl
+                 shadow-sm
+                 p-6
+                 hover:shadow-md
+                 transition">
+
+
+          <div
+            class="flex flex-col
+                   lg:flex-row
+                   lg:items-center
+                   gap-5">
+
+
+            <!-- ICÔNE -->
+            <div
+              class="w-12 h-12
+                     rounded-xl
+                     bg-indigo-100
+                     text-indigo-600
+                     flex items-center
+                     justify-center
+                     text-xl
+                     shrink-0">
+
+              📄
+
+            </div>
+
+
+            <!-- INFORMATIONS -->
+            <div class="flex-1 min-w-0">
+
+              <h2
+                class="font-bold
+                       text-slate-900
+                       text-base
+                       lg:text-lg">
+
+                {{ article.title }}
+
+              </h2>
+
+
+              <p
+                class="text-sm
+                       text-slate-500
+                       mt-2">
+
+                Auteur :
+
+                <span
+                  class="font-medium
+                         text-slate-700">
+
+                  {{ article.authors || 'Non renseigné' }}
+
+                </span>
+
+              </p>
+
+
+              <p
+                class="text-xs
+                       text-slate-400
+                       mt-1">
+
+                Assigné le :
+
+                {{
+                  article.assignedAt
+                    ? (article.assignedAt | date:'dd/MM/yyyy')
+                    : 'Non renseigné'
+                }}
+
+              </p>
+
+
+              <p
+                class="text-xs
+                       text-slate-400
+                       mt-1">
+
+                Date limite :
+
+                {{
+                  article.dueDate
+                    ? (article.dueDate | date:'dd/MM/yyyy')
+                    : 'Non définie'
+                }}
+
+              </p>
+
+            </div>
+
+
+            <!-- STATUT -->
+            <span
+              class="text-xs
+                     font-bold
+                     rounded-full
+                     px-3 py-1.5
+                     shrink-0"
+              [ngClass]="statusClass(
+  article.status === 'ACCEPTED' || article.status === 'REJECTED'
+    ? article.status
+    : article.assignmentStatus
+)"
+                >
+
+              {{
+  label(
+    article.status === 'ACCEPTED' || article.status === 'REJECTED'
+      ? article.status
+      : article.assignmentStatus
+  )
+}}
+
+            </span>
+
+
+            <!-- ACTIONS -->
+            <div
+              class="flex
+                     flex-col
+                     sm:flex-row
+                     gap-2">
+
+
+              <button
+                type="button"
+                (click)="viewArticle(article)"
+                class="rounded-xl
+                       bg-slate-100
+                       text-slate-700
+                       px-4 py-2
+                       text-sm
+                       font-semibold
+                       hover:bg-slate-200">
+
+                Détails
+
+              </button>
+
+
+              @if (article.pdfUrl) {
+
+                <button
+                  type="button"
+                  (click)="openPdf(article)"
+                  class="rounded-xl
+                         bg-indigo-600
+                         text-white
+                         px-4 py-2
+                         text-sm
+                         font-semibold
+                         hover:bg-indigo-700">
+
+                  PDF
+
+                </button>
+
+                @if (article.assignmentStatus === 'ASSIGNED') {
+
+  <button
+    type="button"
+    (click)="startReview(article)"
+    class="rounded-xl bg-indigo-600 px-4 py-2
+           text-sm font-semibold text-white
+           hover:bg-indigo-700">
+
+    Commencer la révision
+
+  </button>
+
+}
+
+@if (article.assignmentStatus === 'IN_REVIEW') {
+
+  <button
+    type="button"
+    (click)="completeReview(article)"
+    class="rounded-xl bg-emerald-600 px-4 py-2
+           text-sm font-semibold text-white
+           hover:bg-emerald-700">
+
+    Terminer la révision
+
+  </button>
+
+}
+
+@if (
+  article.assignmentStatus === 'COMPLETED' &&
+  article.status === 'UNDER_REVIEW'
+) {
+  <button
+    type="button"
+    (click)="acceptArticle(article)"
+    class="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700"
+  >
+    ✓ Accepter
+  </button>
+
+  <button
+    type="button"
+    (click)="rejectArticle(article)"
+    class="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
+  >
+    ✕ Rejeter
+  </button>
+}
+
+
+
+              }
+
+            </div>
+
+          </div>
+
+        </article>
+
+      }
+
+
+      <!-- AUCUN ARTICLE -->
+      @if (filtered.length === 0) {
+
+        <div
+          class="bg-white
+                 border border-slate-100
+                 rounded-2xl
+                 p-10
+                 text-center">
+
+          <div class="text-4xl mb-4">
+            📄
+          </div>
+
+          <h2
+            class="font-bold
+                   text-slate-900">
+
+            Aucun article
+
+          </h2>
+
+          <p
+            class="text-sm
+                   text-slate-500
+                   mt-2">
+
+            Aucun article correspondant
+            à votre recherche.
+
+          </p>
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</div>
+
+
+<!-- MODAL DÉTAIL -->
+@if (selectedArticle) {
+
+  <div
+    class="fixed inset-0
+           bg-black/50
+           flex items-center
+           justify-center
+           p-4 z-50"
+    (click)="closeDetails()">
+
+
+    <div
+      class="bg-white
+             rounded-2xl
+             shadow-xl
+             max-w-2xl
+             w-full
+             max-h-[90vh]
+             overflow-y-auto
+             p-6"
+      (click)="$event.stopPropagation()">
+
+
+      <div
+        class="flex items-start
+               justify-between
+               gap-4">
+
+        <div>
+
+          <h2
+            class="text-xl
+                   font-bold
+                   text-slate-900">
+
+            {{ selectedArticle.title }}
+
+          </h2>
+
+          <p
+            class="text-sm
+                   text-slate-500
+                   mt-2">
+
+            {{ selectedArticle.authors || 'Auteur non renseigné' }}
+
+          </p>
+
+        </div>
+
+
+        <button
+          type="button"
+          (click)="closeDetails()"
+          class="text-slate-400
+                 hover:text-slate-700
+                 text-xl">
+
+          ✕
+
+        </button>
+
+      </div>
+
+
+      <div
+        class="mt-6
+               text-sm
+               text-slate-600
+               leading-6">
+
+        <p>
+          {{ selectedArticle.abstractText || 'Résumé non disponible.' }}
+        </p>
+
+      </div>
+
+
+      <div
+        class="mt-6
+               flex justify-end
+               gap-3">
+
+        @if (selectedArticle.pdfUrl) {
+
+          <button
+            type="button"
+            (click)="openPdf(selectedArticle)"
+            class="rounded-xl
+                   bg-indigo-600
+                   text-white
+                   px-4 py-2
+                   text-sm
+                   font-semibold">
+
+            Ouvrir le PDF
+
+          </button>
+
+        }
+
+
+        <button
+          type="button"
+          (click)="closeDetails()"
+          class="rounded-xl
+                 bg-slate-100
+                 text-slate-700
+                 px-4 py-2
+                 text-sm
+                 font-semibold">
+
+          Fermer
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}

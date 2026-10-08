@@ -1,0 +1,282 @@
+<div class="p-6 lg:p-8 space-y-6">
+
+  <!-- HERO -->
+  <section
+    class="rounded-3xl p-7 lg:p-9 text-white overflow-hidden relative
+           bg-gradient-to-br from-indigo-950 via-indigo-800 to-violet-700 shadow-xl">
+
+    <div class="absolute -right-20 -top-24 w-80 h-80 rounded-full border border-white/10"></div>
+    <div class="absolute right-20 bottom-[-180px] w-96 h-96 rounded-full bg-white/5"></div>
+
+    <div class="relative z-10 max-w-3xl">
+
+      <span
+        class="inline-flex items-center gap-2 rounded-full bg-white/10
+               border border-white/10 px-3 py-1 text-xs font-bold tracking-wider">
+        JIISM · ESPACE ÉDITEUR
+      </span>
+
+      <h1 class="text-3xl lg:text-4xl font-bold mt-5">
+        Tableau de bord éditeur
+      </h1>
+
+      <p class="mt-3 text-white/70 max-w-2xl">
+        Suivez vos assignations, vos révisions et le cycle éditorial
+        des articles qui vous sont confiés.
+      </p>
+
+      <div class="flex flex-wrap gap-3 mt-7">
+
+        <a
+          routerLink="/editor/assignments"
+          class="rounded-xl bg-white text-indigo-800 px-4 py-2.5
+                 font-semibold text-sm">
+          Mes assignations
+        </a>
+
+        <a
+          routerLink="/editor/articles"
+          class="rounded-xl bg-white/10 border border-white/15
+                 px-4 py-2.5 font-semibold text-sm">
+          Mes articles
+        </a>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- STATISTIQUES -->
+  <section class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+
+    @for (
+      card of [
+        {
+          label: 'Articles',
+          value: stats.total,
+          icon: '📚',
+          cls: 'bg-blue-50 text-blue-700'
+        },
+        {
+          label: 'À traiter',
+          value: stats.assigned,
+          icon: '⏳',
+          cls: 'bg-orange-50 text-orange-700'
+        },
+        {
+          label: 'En révision',
+          value: stats.review,
+          icon: '📝',
+          cls: 'bg-violet-50 text-violet-700'
+        },
+        {
+          label: 'Terminés',
+          value: stats.completed,
+          icon: '✓',
+          cls: 'bg-emerald-50 text-emerald-700'
+        }
+      ];
+      track card.label
+    ) {
+
+      <div
+        class="rounded-2xl bg-white p-5 shadow-sm border border-slate-100
+               hover:-translate-y-1 transition">
+
+        <div class="flex justify-between items-start">
+
+          <div
+            class="w-11 h-11 rounded-xl flex items-center justify-center text-xl"
+            [ngClass]="card.cls">
+
+            {{ card.icon }}
+
+          </div>
+
+          <span class="text-xs text-slate-400">
+            ÉDITEUR
+          </span>
+
+        </div>
+
+        <p class="text-xs font-bold tracking-wider text-slate-400 mt-5">
+          {{ card.label | uppercase }}
+        </p>
+
+        <div class="text-3xl font-bold text-slate-900 mt-1">
+          {{ card.value }}
+        </div>
+
+      </div>
+
+    }
+
+  </section>
+
+
+  <!-- FLUX + ANNONCES -->
+  <section class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+
+
+    <!-- MES ASSIGNATIONS -->
+    <div
+      class="xl:col-span-2 rounded-2xl bg-white border border-slate-100
+             shadow-sm p-6">
+
+      <div class="flex justify-between items-center mb-6">
+
+        <div>
+
+          <h2 class="text-lg font-bold text-slate-900">
+            Mes assignations
+          </h2>
+
+          <p class="text-sm text-slate-400">
+            Articles qui vous sont confiés
+          </p>
+
+        </div>
+
+        <a
+          routerLink="/editor/assignments"
+          class="text-sm font-semibold text-indigo-600">
+          Voir tout
+        </a>
+
+      </div>
+
+
+      <!-- ASSIGNATIONS -->
+      <div class="space-y-3">
+
+        @for (
+          assignment of assignments.slice(0, 5);
+          track assignment.id
+        ) {
+
+          <div
+            class="flex items-center gap-4 rounded-xl bg-slate-50 p-4">
+
+            <div
+              class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600
+                     flex items-center justify-center">
+              📄
+            </div>
+
+            <div class="min-w-0 flex-1">
+
+              <div
+                class="font-semibold text-sm text-slate-800 truncate">
+
+                {{
+                  assignment.article?.title ||
+                  assignment.title ||
+                  'Article'
+                }}
+
+              </div>
+
+              <div class="text-xs text-slate-400 mt-1">
+
+                Date limite :
+                {{
+                  assignment.dueDate
+                    ? (assignment.dueDate | date:'dd/MM/yyyy')
+                    : 'Non définie'
+                }}
+
+              </div>
+
+            </div>
+
+            <span
+              class="text-xs font-semibold rounded-full px-2.5 py-1"
+              [ngClass]="{
+                'bg-orange-100 text-orange-700':
+                  assignment.status === 'ASSIGNED',
+
+                'bg-violet-100 text-violet-700':
+                  assignment.status === 'IN_REVIEW',
+
+                'bg-emerald-100 text-emerald-700':
+                  assignment.status === 'COMPLETED'
+              }">
+
+              {{ label(assignment.status) }}
+
+            </span>
+
+          </div>
+
+        }
+
+        @if (assignments.length === 0) {
+
+          <div class="text-center py-8 text-sm text-slate-400">
+            Aucune assignation.
+          </div>
+
+        }
+
+      </div>
+
+    </div>
+
+
+    <!-- ANNONCES -->
+    <div
+      class="rounded-2xl bg-white border border-slate-100
+             shadow-sm p-6">
+
+      <h2 class="text-lg font-bold text-slate-900">
+        Annonces
+      </h2>
+
+      <p class="text-sm text-slate-400 mb-5">
+        Communications JIISM
+      </p>
+
+
+      <div class="space-y-4">
+
+        @for (
+          a of announcements.slice(0, 3);
+          track a.id
+        ) {
+
+          <div
+            class="border-l-4 border-indigo-500 bg-indigo-50/50
+                   rounded-r-xl p-4">
+
+            <div class="font-semibold text-sm text-slate-800">
+              {{ a.title }}
+            </div>
+
+            <p class="text-xs text-slate-500 mt-2 line-clamp-2">
+              {{ a.content }}
+            </p>
+
+            <div class="text-[11px] text-slate-400 mt-3">
+              {{ a.createdAt | date:'dd/MM/yyyy' }}
+            </div>
+
+          </div>
+
+        }
+
+        @if (announcements.length === 0) {
+
+          <div class="text-center py-6 text-sm text-slate-400">
+            Aucune annonce récente.
+          </div>
+
+        }
+
+      </div>
+
+    </div>
+
+  </section>
+
+</div>

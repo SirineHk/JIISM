@@ -1,0 +1,260 @@
+﻿<div class="p-6 lg:p-8">
+
+  <!-- HEADER -->
+  <div class="mb-8">
+
+    <span
+      class="inline-flex items-center rounded-full
+             bg-indigo-50 text-indigo-700
+             px-3 py-1 text-xs font-bold tracking-wide">
+      JIISM · ESPACE ÉDITEUR
+    </span>
+
+    <h1 class="text-2xl lg:text-3xl font-bold text-slate-900 mt-4">
+      Mes assignations
+    </h1>
+
+    <p class="text-sm text-slate-500 mt-2">
+      Retrouvez les articles qui vous sont confiés et suivez leur progression.
+    </p>
+
+  </div>
+
+
+  <!-- STATISTIQUES -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-5 mb-8">
+
+    <div
+      class="rounded-2xl bg-white border border-slate-100
+             shadow-sm p-5">
+
+      <div class="text-xs font-bold text-slate-400 tracking-wide">
+        TOTAL
+      </div>
+
+      <div class="text-3xl font-bold text-slate-900 mt-2">
+        {{ stats.total }}
+      </div>
+
+    </div>
+
+
+    <div
+      class="rounded-2xl bg-orange-50 border border-orange-100
+             p-5">
+
+      <div class="text-xs font-bold text-orange-600 tracking-wide">
+        À TRAITER
+      </div>
+
+      <div class="text-3xl font-bold text-orange-800 mt-2">
+        {{ stats.assigned }}
+      </div>
+
+    </div>
+
+
+    <div
+      class="rounded-2xl bg-violet-50 border border-violet-100
+             p-5">
+
+      <div class="text-xs font-bold text-violet-600 tracking-wide">
+        EN RÉVISION
+      </div>
+
+      <div class="text-3xl font-bold text-violet-800 mt-2">
+        {{ stats.review }}
+      </div>
+
+    </div>
+
+
+    <div
+      class="rounded-2xl bg-emerald-50 border border-emerald-100
+             p-5">
+
+      <div class="text-xs font-bold text-emerald-600 tracking-wide">
+        TERMINÉS
+      </div>
+
+      <div class="text-3xl font-bold text-emerald-800 mt-2">
+        {{ stats.completed }}
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- CHARGEMENT -->
+  @if (loading) {
+
+    <div
+      class="bg-white rounded-2xl border border-slate-100
+             p-10 text-center">
+
+      <div class="text-sm text-slate-500">
+        Chargement de vos assignations...
+      </div>
+
+    </div>
+
+  }
+
+
+  <!-- ERREUR -->
+  @if (!loading && error) {
+
+    <div
+      class="bg-red-50 border border-red-200
+             rounded-2xl p-6 text-red-700">
+
+      {{ error }}
+
+    </div>
+
+  }
+
+
+  <!-- LISTE -->
+  @if (!loading && !error) {
+
+    <div class="space-y-4">
+
+      @for (
+        item of items;
+        track item.id
+      ) {
+
+        <article
+          class="bg-white border border-slate-100
+                 rounded-2xl shadow-sm p-6
+                 hover:shadow-md transition">
+
+          <div
+            class="flex flex-col lg:flex-row
+                   lg:items-center gap-5">
+
+
+            <!-- ICÔNE -->
+            <div
+              class="w-12 h-12 rounded-xl
+                     bg-indigo-100 text-indigo-600
+                     flex items-center justify-center
+                     text-xl shrink-0">
+
+              📄
+
+            </div>
+
+
+            <!-- ARTICLE -->
+            <div class="flex-1 min-w-0">
+
+              <h2
+                class="font-bold text-slate-900
+                       text-base lg:text-lg">
+
+                {{ item.article?.title || 'Article sans titre' }}
+
+              </h2>
+
+              <p class="text-sm text-slate-500 mt-2">
+
+                Auteur :
+                <span class="font-medium text-slate-700">
+                  {{ item.article?.authors || 'Non renseigné' }}
+                </span>
+
+              </p>
+
+              <p class="text-xs text-slate-400 mt-1">
+
+                Assigné le :
+                {{
+                  item.assignedAt
+                    ? (item.assignedAt | date:'dd/MM/yyyy')
+                    : 'Non renseigné'
+                }}
+
+              </p>
+
+            </div>
+
+
+            <!-- ÉCHÉANCE -->
+            <div class="lg:text-right">
+
+              <div class="text-xs text-slate-400">
+                Date limite
+              </div>
+
+              <div class="text-sm font-semibold text-slate-700 mt-1">
+
+                {{
+                  item.dueDate
+                    ? (item.dueDate | date:'dd/MM/yyyy')
+                    : 'Non définie'
+                }}
+
+              </div>
+
+            </div>
+
+
+            <!-- STATUT -->
+            <span
+              class="text-xs font-bold rounded-full
+                     px-3 py-1.5 shrink-0"
+              [ngClass]="{
+
+                'bg-orange-100 text-orange-700':
+                  item.status === 'ASSIGNED',
+
+                'bg-violet-100 text-violet-700':
+                  item.status === 'IN_REVIEW',
+
+                'bg-emerald-100 text-emerald-700':
+                  item.status === 'COMPLETED'
+
+              }">
+
+              {{ label(item.status) }}
+
+            </span>
+
+          </div>
+
+        </article>
+
+      }
+
+
+      <!-- AUCUNE ASSIGNATION -->
+      @if (items.length === 0) {
+
+        <div
+          class="bg-white border border-slate-100
+                 rounded-2xl p-10 text-center">
+
+          <div class="text-4xl mb-4">
+            📄
+          </div>
+
+          <h2 class="font-bold text-slate-900">
+            Aucune assignation
+          </h2>
+
+          <p class="text-sm text-slate-500 mt-2">
+            Aucun article ne vous a encore été assigné.
+          </p>
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</div>

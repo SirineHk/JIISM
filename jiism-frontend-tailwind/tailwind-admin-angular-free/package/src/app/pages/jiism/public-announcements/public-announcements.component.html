@@ -1,0 +1,111 @@
+<div class="min-h-screen bg-slate-50">
+
+  <!-- Header -->
+  <div class="bg-white border-b border-slate-200">
+    <div class="max-w-6xl mx-auto px-6 py-10">
+
+      <div class="flex items-center gap-3 mb-3">
+        <div
+          class="w-11 h-11 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl">
+          📢
+        </div>
+
+        <span class="text-sm font-semibold text-indigo-600 uppercase tracking-wide">
+          JIISM
+        </span>
+      </div>
+
+      <h1 class="text-3xl font-bold text-slate-900">
+        Annonces
+      </h1>
+
+      <p class="text-slate-500 mt-2">
+        Retrouvez les dernières communications et actualités de JIISM.
+      </p>
+
+    </div>
+  </div>
+
+  <!-- Contenu -->
+  <main class="max-w-6xl mx-auto px-6 py-10">
+
+    <!-- Chargement -->
+    @if (loading) {
+      <div class="flex justify-center py-16">
+        <div class="text-slate-500">
+          Chargement des annonces...
+        </div>
+      </div>
+    }
+
+    <!-- Erreur -->
+    @if (!loading && error) {
+      <div class="bg-red-50 border border-red-200 rounded-2xl p-6 text-red-700">
+        Impossible de charger les annonces.
+      </div>
+    }
+
+    <!-- Aucune annonce -->
+    @if (!loading && !error && announcements.length === 0) {
+      <div class="bg-white rounded-2xl border border-slate-200 p-10 text-center">
+
+        <div class="text-4xl mb-4">
+          📢
+        </div>
+
+        <h2 class="text-lg font-bold text-slate-900">
+          Aucune annonce publiée
+        </h2>
+
+        <p class="text-sm text-slate-500 mt-2">
+          Il n'y a actuellement aucune annonce à afficher.
+        </p>
+
+      </div>
+    }
+
+    <!-- Liste des annonces -->
+    @if (!loading && !error && announcements.length > 0) {
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        @for (announcement of announcements; track announcement.id) {
+
+          <article
+            class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 hover:shadow-md transition">
+
+            <!-- Badge + date -->
+            <div class="flex justify-between items-center gap-4">
+
+              <span
+                class="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold">
+                ANNONCE
+              </span>
+
+              <span class="text-xs text-slate-400">
+                {{ announcement.publishedAt || announcement.createdAt | date:'dd/MM/yyyy' }}
+              </span>
+
+            </div>
+
+            <!-- Titre -->
+            <h2 class="text-xl font-bold text-slate-900 mt-5">
+              {{ announcement.title }}
+            </h2>
+
+            <!-- Contenu -->
+            <p class="text-sm text-slate-600 mt-3 leading-7 whitespace-pre-line">
+              {{ announcement.content }}
+            </p>
+
+          </article>
+
+        }
+
+      </div>
+
+    }
+
+  </main>
+
+</div>

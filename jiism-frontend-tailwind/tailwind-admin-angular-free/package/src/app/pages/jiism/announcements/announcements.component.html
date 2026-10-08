@@ -1,0 +1,156 @@
+<div class="p-6 lg:p-8"><div class="flex justify-between items-center mb-6">
+    <div><h1 class="text-2xl font-bold text-slate-900">Annonces JIISM</h1>
+        <p class="text-sm text-slate-500 mt-1">
+            Publiez les communications destinées aux utilisateurs.
+        </p>
+    </div>
+    @if (showForm) {
+
+  <div class="mb-6 bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+
+    <div class="flex justify-between items-center mb-5">
+
+      <div>
+        <h2 class="text-lg font-bold text-slate-900">
+          Nouvelle annonce
+        </h2>
+
+        <p class="text-sm text-slate-500 mt-1">
+          Créez une communication destinée aux utilisateurs.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        (click)="closeForm()"
+        class="text-slate-400 hover:text-slate-700 text-xl">
+        ×
+      </button>
+
+    </div>
+
+    <div class="space-y-4">
+
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-2">
+          Titre
+        </label>
+
+        <input
+          type="text"
+          [(ngModel)]="form.title"
+          placeholder="Titre de l'annonce"
+          class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:border-indigo-500 focus:ring-indigo-500">
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-2">
+          Contenu
+        </label>
+
+        <textarea
+          [(ngModel)]="form.content"
+          rows="5"
+          placeholder="Contenu de l'annonce"
+          class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:border-indigo-500 focus:ring-indigo-500">
+        </textarea>
+      </div>
+
+      <div class="flex justify-end gap-3 pt-2">
+
+        <button
+          type="button"
+          (click)="closeForm()"
+          class="rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-50">
+          Annuler
+        </button>
+
+        <button
+          type="button"
+          (click)="createAnnouncement()"
+          [disabled]="saving"
+          class="rounded-xl bg-indigo-600 text-white px-5 py-3 text-sm font-semibold hover:bg-indigo-700 disabled:opacity-50">
+
+          @if (saving) {
+            Création...
+          } @else {
+            Créer l'annonce
+          }
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}
+    <button
+        type="button"
+        (click)="openForm()"
+        class="rounded-xl bg-indigo-600 text-white px-5 py-3 text-sm font-semibold hover:bg-indigo-700">
+        + Nouvelle annonce
+</button>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+    @for(a of items;track a.id)
+    {
+        <article class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 border-l-4 border-indigo-500">
+            <div class="flex justify-between gap-4">
+                <span class="text-xs font-bold text-indigo-600">
+                    ANNONCE
+                </span>
+                <span class="text-xs text-slate-400">
+                    {{a.createdAt | date:'dd/MM/yyyy'}}
+                </span>
+            </div>
+            <h2 class="font-bold text-lg text-slate-900 mt-3">
+                {{a.title}}
+            </h2>
+            <p class="text-sm text-slate-500 mt-2 leading-6">
+                {{a.content}}
+            </p>
+            <div class="mt-4 flex items-center justify-between gap-3">
+
+  @if (a.published) {
+
+    <span
+      class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold">
+      Publiée
+    </span>
+
+    <button
+      type="button"
+      (click)="unpublishAnnouncement(a.id)"
+      class="px-3 py-2 rounded-xl border border-amber-200 text-amber-700 text-xs font-semibold hover:bg-amber-50">
+      Dépublier
+    </button>
+
+  } @else {
+
+    <span
+      class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">
+      Brouillon
+    </span>
+
+    <button
+      type="button"
+      (click)="publishAnnouncement(a.id)"
+      class="px-3 py-2 rounded-xl bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700">
+      Publier
+    </button>
+
+  }
+
+  <button
+    type="button"
+    (click)="deleteAnnouncement(a.id)"
+    class="px-3 py-2 rounded-xl bg-red-50 text-red-600 text-xs font-semibold hover:bg-red-100">
+    Supprimer
+  </button>
+
+</div>
+        </article>
+    }
+    </div>
+</div>
