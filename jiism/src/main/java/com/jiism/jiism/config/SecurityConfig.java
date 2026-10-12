@@ -60,16 +60,26 @@ public class SecurityConfig {
                         // PUBLIC
                         // =========================
 
-                        .requestMatchers(
-                                "/auth/**",
-                                "/verify-email/**",
-                                "/public/**",
-                                "/files/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/v3/api-docs/**"
-                        ).permitAll()
+                                .requestMatchers(
+                                        "/auth/**",
+                                        "/verify-email/**",
+                                        "/public/**",
+                                        "/swagger-ui/**",
+                                        "/swagger-ui.html",
+                                        "/v3/api-docs/**"
+                                ).permitAll()
 
+// Upload PDF : réservé à l'auteur
+                                .requestMatchers(
+                                        org.springframework.http.HttpMethod.POST,
+                                        "/files/upload-pdf"
+                                ).hasRole("AUTEUR")
+
+// Consultation des PDF
+                                .requestMatchers(
+                                        org.springframework.http.HttpMethod.GET,
+                                        "/files/**"
+                                ).permitAll()
                         // =========================
                         // ADMIN
                         // =========================

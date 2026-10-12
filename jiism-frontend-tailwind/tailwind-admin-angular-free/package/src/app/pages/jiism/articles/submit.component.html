@@ -1,1 +1,368 @@
-<div class="p-6 lg:p-8"><div class="max-w-4xl mx-auto"><div class="mb-6"><a routerLink="/articles" class="text-sm text-indigo-600 font-semibold">← Retour aux articles</a><h1 class="text-2xl font-bold text-slate-900 mt-3">Soumettre un article</h1><p class="text-sm text-slate-500 mt-1">Préparez une nouvelle soumission scientifique pour le comité éditorial.</p></div>@if(submitted){<div class="rounded-2xl bg-emerald-50 border border-emerald-100 p-6 mb-5"><div class="font-bold text-emerald-800">Soumission préparée</div><p class="text-sm text-emerald-700 mt-1">Le formulaire est prêt à être connecté à votre endpoint de création d'article.</p></div>}<form (ngSubmit)="submit()" class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-5"><div><label class="text-sm font-semibold text-slate-700">Titre de l'article</label><input [(ngModel)]="title" name="title" required class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-indigo-500" placeholder="Titre scientifique"></div><div><label class="text-sm font-semibold text-slate-700">Résumé</label><textarea [(ngModel)]="abstractText" name="abstractText" rows="5" class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-indigo-500" placeholder="Résumé de l'étude"></textarea></div><div class="grid md:grid-cols-2 gap-5"><div><label class="text-sm font-semibold text-slate-700">Mots-clés</label><input [(ngModel)]="keywords" name="keywords" class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-indigo-500" placeholder="IA, systèmes intelligents..."></div><div><label class="text-sm font-semibold text-slate-700">Auteurs</label><input [(ngModel)]="authors" name="authors" class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-indigo-500" placeholder="Nom des auteurs"></div></div><div><label class="text-sm font-semibold text-slate-700">Affiliations</label><input [(ngModel)]="affiliations" name="affiliations" class="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-indigo-500" placeholder="Laboratoire / Université"></div><div class="rounded-xl bg-slate-50 border border-dashed border-slate-300 p-6"><div class="font-semibold text-slate-700">Document PDF</div><p class="text-xs text-slate-400 mt-1">Le raccordement à /files/upload-pdf pourra être branché ici.</p><input [(ngModel)]="pdfUrl" name="pdfUrl" class="mt-3 w-full rounded-xl border border-slate-200 px-4 py-3 bg-white" placeholder="Chemin PDF"></div><div class="flex justify-end gap-3"><a routerLink="/articles" class="rounded-xl border border-slate-200 px-5 py-3 text-sm font-semibold text-slate-600">Annuler</a><button class="rounded-xl bg-indigo-600 text-white px-5 py-3 text-sm font-semibold">Soumettre l'article</button></div></form></div></div>
+<div class="p-6 lg:p-8">
+
+  <div class="max-w-4xl mx-auto">
+
+    <!-- HEADER -->
+    <div class="mb-6">
+
+      <a
+        routerLink="/author/articles"
+        class="text-sm text-indigo-600 font-semibold hover:text-indigo-800">
+
+        ← Retour à mes articles
+
+      </a>
+
+      <h1
+        class="text-2xl lg:text-3xl font-bold text-slate-900 mt-3">
+
+        Soumettre un article
+
+      </h1>
+
+      <p class="text-sm text-slate-500 mt-1">
+
+        Préparez une nouvelle soumission scientifique
+        pour le comité éditorial.
+
+      </p>
+
+    </div>
+
+
+    <!-- ERREUR -->
+    @if (errorMessage) {
+
+      <div
+        class="rounded-xl bg-red-50 border border-red-200
+               text-red-700 p-4 mb-5">
+
+        <div class="font-semibold">
+          Erreur
+        </div>
+
+        <p class="text-sm mt-1">
+          {{ errorMessage }}
+        </p>
+
+      </div>
+
+    }
+
+
+    <!-- SUCCÈS -->
+    @if (submitted) {
+
+      <div
+        class="rounded-xl bg-emerald-50
+               border border-emerald-200
+               p-5 mb-5">
+
+        <div class="font-bold text-emerald-800">
+
+          Article soumis avec succès ✓
+
+        </div>
+
+        <p class="text-sm text-emerald-700 mt-1">
+
+          Votre article est maintenant en attente
+          de traitement par le comité éditorial.
+
+        </p>
+
+        <p class="text-xs text-emerald-600 mt-2">
+
+          Redirection vers vos articles...
+
+        </p>
+
+      </div>
+
+    }
+
+
+    <!-- FORMULAIRE -->
+    <form
+      (ngSubmit)="submit()"
+      class="bg-white rounded-2xl
+             border border-slate-100
+             shadow-sm p-6 space-y-6">
+
+
+      <!-- TITRE -->
+      <div>
+
+        <label
+          class="block text-sm font-semibold
+                 text-slate-700 mb-2">
+
+          Titre de l'article
+          <span class="text-red-500">*</span>
+
+        </label>
+
+        <input
+          [(ngModel)]="title"
+          name="title"
+          required
+          type="text"
+          class="w-full rounded-xl border
+                 border-slate-200 px-4 py-3
+                 text-sm outline-none
+                 focus:ring-2 focus:ring-indigo-500"
+          placeholder="Titre scientifique de l'article">
+
+      </div>
+
+
+      <!-- RÉSUMÉ -->
+      <div>
+
+        <label
+          class="block text-sm font-semibold
+                 text-slate-700 mb-2">
+
+          Résumé
+
+        </label>
+
+        <textarea
+          [(ngModel)]="abstractText"
+          name="abstractText"
+          rows="6"
+          class="w-full rounded-xl border
+                 border-slate-200 px-4 py-3
+                 text-sm outline-none
+                 focus:ring-2 focus:ring-indigo-500"
+          placeholder="Résumé de votre article...">
+        </textarea>
+
+      </div>
+
+
+      <!-- KEYWORDS / AUTHORS -->
+      <div class="grid md:grid-cols-2 gap-5">
+
+
+        <!-- KEYWORDS -->
+        <div>
+
+          <label
+            class="block text-sm font-semibold
+                   text-slate-700 mb-2">
+
+            Mots-clés
+
+          </label>
+
+          <input
+            [(ngModel)]="keywords"
+            name="keywords"
+            type="text"
+            class="w-full rounded-xl border
+                   border-slate-200 px-4 py-3
+                   text-sm outline-none
+                   focus:ring-2 focus:ring-indigo-500"
+            placeholder="IA, systèmes intelligents, données">
+
+        </div>
+
+
+        <!-- AUTHORS -->
+        <div>
+
+          <label
+            class="block text-sm font-semibold
+                 text-slate-700 mb-2">
+
+            Auteurs
+
+          </label>
+
+          <input
+            [(ngModel)]="authors"
+            name="authors"
+            type="text"
+            class="w-full rounded-xl border
+                   border-slate-200 px-4 py-3
+                   text-sm outline-none
+                   focus:ring-2 focus:ring-indigo-500"
+            placeholder="Nom Prénom, Nom Prénom">
+
+        </div>
+
+      </div>
+
+
+      <!-- AFFILIATION -->
+      <div>
+
+        <label
+          class="block text-sm font-semibold
+                 text-slate-700 mb-2">
+
+          Affiliation
+
+        </label>
+
+        <input
+          [(ngModel)]="affiliations"
+          name="affiliations"
+          type="text"
+          class="w-full rounded-xl border
+                 border-slate-200 px-4 py-3
+                 text-sm outline-none
+                 focus:ring-2 focus:ring-indigo-500"
+          placeholder="Université, laboratoire, institution">
+
+      </div>
+
+
+      <!-- PDF -->
+      <div
+        class="rounded-xl bg-slate-50
+               border border-dashed
+               border-slate-300 p-6">
+
+        <div class="flex items-center gap-3 mb-2">
+
+          <div
+            class="w-10 h-10 rounded-lg
+                   bg-red-100 flex items-center
+                   justify-center text-red-600">
+
+            PDF
+
+          </div>
+
+          <div>
+
+            <div
+              class="font-semibold text-slate-700">
+
+              Document PDF
+              <span class="text-red-500">*</span>
+
+            </div>
+
+            <p class="text-xs text-slate-400">
+
+              Format PDF uniquement — 10 Mo maximum
+
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <input
+          type="file"
+          accept="application/pdf,.pdf"
+          (change)="onFileSelected($event)"
+          class="block w-full text-sm
+                 text-slate-600 mt-4
+                 file:mr-4 file:py-2
+                 file:px-4 file:rounded-lg
+                 file:border-0
+                 file:bg-indigo-50
+                 file:text-indigo-700
+                 file:font-semibold
+                 hover:file:bg-indigo-100">
+
+
+        @if (selectedFile) {
+
+          <div
+            class="mt-4 flex items-center
+                   justify-between
+                   rounded-lg bg-white
+                   border border-slate-200
+                   px-4 py-3">
+
+            <div>
+
+              <div
+                class="text-sm font-semibold
+                       text-slate-700">
+
+                {{ selectedFile.name }}
+
+              </div>
+
+              <div
+                class="text-xs text-slate-400 mt-1">
+
+                {{ (selectedFile.size / 1024 / 1024).toFixed(2) }}
+                Mo
+
+              </div>
+
+            </div>
+
+            <span
+              class="text-xs font-semibold
+                     text-emerald-600">
+
+              PDF sélectionné ✓
+
+            </span>
+
+          </div>
+
+        }
+
+      </div>
+
+
+      <!-- ACTIONS -->
+      <div
+        class="flex flex-col sm:flex-row
+               justify-end gap-3
+               pt-2">
+
+        <a
+          routerLink="/author/articles"
+          class="px-5 py-3 rounded-xl
+                 border border-slate-200
+                 text-sm font-semibold
+                 text-slate-600
+                 text-center
+                 hover:bg-slate-50">
+
+          Annuler
+
+        </a>
+
+
+        <button
+          type="submit"
+          [disabled]="loading || submitted"
+          class="px-5 py-3 rounded-xl
+                 bg-indigo-600
+                 text-white
+                 text-sm font-semibold
+                 hover:bg-indigo-700
+                 disabled:opacity-50
+                 disabled:cursor-not-allowed">
+
+          @if (loading) {
+
+            Envoi en cours...
+
+          } @else {
+
+            Soumettre l'article
+
+          }
+
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>

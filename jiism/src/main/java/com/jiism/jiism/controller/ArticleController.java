@@ -128,4 +128,39 @@ public class ArticleController {
 
         return ResponseEntity.ok(savedArticle);
     }
+
+    // ==========================================
+// GET MES ARTICLES
+// ==========================================
+
+    @GetMapping("/my")
+    public ResponseEntity<?> getMyArticles(Authentication authentication) {
+
+        // Vérifier que l'utilisateur est authentifié
+        if (authentication == null) {
+            return ResponseEntity
+                    .status(401)
+                    .body("Utilisateur non authentifié");
+        }
+
+        // Récupérer le username de l'utilisateur connecté
+        String username = authentication.getName();
+
+        // Chercher l'utilisateur
+        Utilisateur user = userRepository
+                .findByUsername(username)
+                .orElse(null);
+
+        if (user == null) {
+            return ResponseEntity
+                    .status(404)
+                    .body("Utilisateur introuvable");
+        }
+
+        // Récupérer uniquement ses articles
+        List<Article> articles =
+                articleRepository.findBySubmittedBy(user);
+
+        return ResponseEntity.ok(articles);
+    }
 }

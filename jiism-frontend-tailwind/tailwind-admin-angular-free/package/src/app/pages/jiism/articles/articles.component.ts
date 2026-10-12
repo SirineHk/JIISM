@@ -47,30 +47,44 @@ export class ArticlesComponent {
    */
   private loadArticles(): void {
 
-    this.service.getArticles().subscribe({
-      next: (articles) => {
+  this.service.getArticles().subscribe({
 
-        this.articles = articles ?? [];
+    next: (articles) => {
 
-        this.computeStats();
+      console.log('ARTICLES REÇUS :', articles);
 
-      },
+      this.articles = articles ?? [];
 
-      error: (error) => {
+      console.log(
+        'ARTICLE 7 :',
+        this.articles.find(a => a.id === 7)
+      );
 
-        console.error(
-          'Erreur lors du chargement des articles :',
-          error
-        );
+      console.log(
+        'AUTEUR ARTICLE 7 :',
+        this.articles.find(a => a.id === 7)?.submittedBy?.username
+      );
 
-        this.articles = [];
+      this.computeStats();
 
-        this.computeStats();
+    },
 
-      }
-    });
+    error: (error) => {
 
-  }
+      console.error(
+        'Erreur lors du chargement des articles :',
+        error
+      );
+
+      this.articles = [];
+
+      this.computeStats();
+
+    }
+
+  });
+
+}
 
 
   /**

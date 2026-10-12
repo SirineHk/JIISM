@@ -1,0 +1,746 @@
+<div class="p-6 lg:p-8">
+
+  <!-- HEADER -->
+  <div class="mb-8">
+
+    <span
+      class="inline-flex items-center rounded-full
+             bg-indigo-50 text-indigo-700
+             px-3 py-1 text-xs font-bold tracking-wide">
+
+      JIISM · ESPACE AUTEUR
+
+    </span>
+
+    <h1
+      class="mt-3 text-2xl lg:text-3xl font-bold
+             text-gray-900">
+
+      Mes articles
+
+    </h1>
+
+    <p class="mt-2 text-gray-500">
+
+      Suivez l'état d'avancement de vos articles
+      soumis au JIISM.
+
+    </p>
+    <div class="mt-5">
+
+  <a
+    routerLink="/author/articles/submit"
+    class="inline-flex items-center rounded-lg
+           bg-indigo-600 px-5 py-2.5
+           text-sm font-semibold text-white
+           shadow-sm
+           hover:bg-indigo-700">
+
+    + Soumettre un article
+
+  </a>
+
+</div>
+
+  </div>
+
+
+  <!-- LOADING -->
+
+  @if (loading) {
+
+    <div class="py-10 text-center text-gray-500">
+
+      Chargement de vos articles...
+
+    </div>
+
+  }
+
+
+  <!-- ERROR -->
+
+  @if (!loading && errorMessage) {
+
+    <div
+      class="mb-6 rounded-lg border border-red-200
+             bg-red-50 p-4 text-red-700">
+
+      {{ errorMessage }}
+
+    </div>
+
+  }
+
+
+  @if (!loading) {
+
+    <!-- STATISTIQUES -->
+
+    <div
+      class="grid grid-cols-1 gap-4
+             sm:grid-cols-2
+             lg:grid-cols-3
+             xl:grid-cols-6
+             mb-8">
+
+      <!-- TOTAL -->
+
+      <div
+        class="rounded-xl border bg-white p-5 shadow-sm">
+
+        <p class="text-sm text-gray-500">
+          Total
+        </p>
+
+        <p class="mt-2 text-3xl font-bold text-gray-900">
+          {{ total }}
+        </p>
+
+      </div>
+
+
+      <!-- PENDING -->
+
+      <div
+        class="rounded-xl border bg-white p-5 shadow-sm">
+
+        <p class="text-sm text-gray-500">
+          En attente
+        </p>
+
+        <p
+          class="mt-2 text-3xl font-bold text-yellow-600">
+
+          {{ pending }}
+
+        </p>
+
+      </div>
+
+
+      <!-- UNDER REVIEW -->
+
+      <div
+        class="rounded-xl border bg-white p-5 shadow-sm">
+
+        <p class="text-sm text-gray-500">
+          En révision
+        </p>
+
+        <p
+          class="mt-2 text-3xl font-bold text-blue-600">
+
+          {{ underReview }}
+
+        </p>
+
+      </div>
+
+
+      <!-- ACCEPTED -->
+
+      <div
+        class="rounded-xl border bg-white p-5 shadow-sm">
+
+        <p class="text-sm text-gray-500">
+          Acceptés
+        </p>
+
+        <p
+          class="mt-2 text-3xl font-bold text-green-600">
+
+          {{ accepted }}
+
+        </p>
+
+      </div>
+
+
+      <!-- REJECTED -->
+
+      <div
+        class="rounded-xl border bg-white p-5 shadow-sm">
+
+        <p class="text-sm text-gray-500">
+          Rejetés
+        </p>
+
+        <p
+          class="mt-2 text-3xl font-bold text-red-600">
+
+          {{ rejected }}
+
+        </p>
+
+      </div>
+
+
+      <!-- PUBLISHED -->
+
+      <div
+        class="rounded-xl border bg-white p-5 shadow-sm">
+
+        <p class="text-sm text-gray-500">
+          Publiés
+        </p>
+
+        <p
+          class="mt-2 text-3xl font-bold text-purple-600">
+
+          {{ published }}
+
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- ARTICLES -->
+
+    <div
+      class="overflow-hidden rounded-xl
+             border bg-white shadow-sm">
+
+      <div
+        class="border-b px-6 py-5">
+
+        <h2 class="text-lg font-semibold text-gray-900">
+
+          Mes articles
+
+        </h2>
+
+        <p class="mt-1 text-sm text-gray-500">
+
+          Liste de vos articles et de leur état
+          d'avancement.
+
+        </p>
+
+      </div>
+
+
+      @if (articles.length === 0) {
+
+        <div
+          class="p-10 text-center text-gray-500">
+
+          Vous n'avez encore soumis aucun article.
+
+        </div>
+
+      }
+
+
+      @if (articles.length > 0) {
+
+        <div class="overflow-x-auto">
+
+          <table class="min-w-full divide-y divide-gray-200">
+
+            <thead class="bg-gray-50">
+
+              <tr>
+
+                <th
+                  class="px-6 py-3 text-left
+                         text-xs font-semibold
+                         uppercase tracking-wider
+                         text-gray-500">
+
+                  Article
+
+                </th>
+
+                <th
+                  class="px-6 py-3 text-left
+                         text-xs font-semibold
+                         uppercase tracking-wider
+                         text-gray-500">
+
+                  Statut
+
+                </th>
+
+                <th
+                  class="px-6 py-3 text-left
+                         text-xs font-semibold
+                         uppercase tracking-wider
+                         text-gray-500">
+
+                  Soumis le
+
+                </th>
+
+                <th
+                  class="px-6 py-3 text-left
+                         text-xs font-semibold
+                         uppercase tracking-wider
+                         text-gray-500">
+
+                  Dernière modification
+
+                </th>
+
+                <th
+                  class="px-6 py-3 text-right
+                         text-xs font-semibold
+                         uppercase tracking-wider
+                         text-gray-500">
+
+                  Action
+
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody
+              class="divide-y divide-gray-200 bg-white">
+
+              @for (article of articles; track article.id) {
+
+                <tr class="hover:bg-gray-50">
+
+                  <!-- TITRE -->
+
+                  <td class="px-6 py-4">
+
+                    <div
+                      class="max-w-md font-medium
+                             text-gray-900">
+
+                      {{ article.title }}
+
+                    </div>
+
+                    @if (article.submittedBy?.username) {
+
+                      <div
+                        class="mt-1 text-sm text-gray-500">
+
+                        {{ article.submittedBy?.username || 'Non renseigné' }}
+
+                      </div>
+
+                    }
+
+                  </td>
+
+
+                  <!-- STATUT -->
+
+                  <td class="px-6 py-4">
+
+                    <span
+                      class="inline-flex rounded-full
+                             px-3 py-1 text-xs
+                             font-semibold"
+                      [ngClass]="getStatusClass(article.status)">
+
+                      {{ getStatusLabel(article.status) }}
+
+                    </span>
+
+                  </td>
+
+
+                  <!-- DATE -->
+
+                  <td
+                    class="px-6 py-4
+                           text-sm text-gray-600">
+
+                    {{ formatDate(article.submittedAt) }}
+
+                  </td>
+
+
+                  <!-- LAST MODIFIED -->
+
+                  <td
+                    class="px-6 py-4
+                           text-sm text-gray-600">
+
+                    {{ formatDate(article.lastModified) }}
+
+                  </td>
+
+
+                  <!-- ACTION -->
+
+<td class="px-6 py-4">
+
+  <div class="flex items-center justify-end gap-2">
+
+    <!-- DÉTAILS -->
+
+    <button
+      type="button"
+      (click)="openDetails(article)"
+      class="rounded-lg border border-gray-300
+             bg-white px-4 py-2
+             text-sm font-medium text-gray-700
+             hover:bg-gray-50">
+
+      Détails
+
+    </button>
+
+
+    <!-- PDF -->
+
+    @if (article.pdfUrl) {
+
+      <button
+        type="button"
+        (click)="openPdf(article)"
+        class="rounded-lg bg-indigo-600
+               px-4 py-2 text-sm
+               font-medium text-white
+               hover:bg-indigo-700">
+
+        PDF
+
+      </button>
+
+    }
+
+  </div>
+
+                  </td>
+
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+<!-- ========================================== -->
+<!-- MODAL DÉTAIL ARTICLE -->
+<!-- ========================================== -->
+
+@if (showDetails && selectedArticle) {
+
+  <div
+    class="fixed inset-0 z-50 flex items-center
+           justify-center bg-black/50 p-4"
+    (click)="closeDetails()">
+
+    <div
+      class="w-full max-w-3xl max-h-[90vh]
+             overflow-y-auto rounded-2xl
+             bg-white shadow-xl"
+      (click)="$event.stopPropagation()">
+
+
+      <!-- HEADER MODAL -->
+
+      <div
+        class="flex items-center justify-between
+               border-b px-6 py-5">
+
+        <div>
+
+          <h2
+            class="text-xl font-bold text-gray-900">
+
+            Détails de l'article
+
+          </h2>
+
+          <p class="mt-1 text-sm text-gray-500">
+
+            Informations concernant votre article
+
+          </p>
+
+        </div>
+
+
+        <button
+          type="button"
+          (click)="closeDetails()"
+          class="rounded-lg p-2
+                 text-gray-500
+                 hover:bg-gray-100">
+
+          ✕
+
+        </button>
+
+      </div>
+
+
+      <!-- CONTENU -->
+
+      <div class="space-y-6 p-6">
+
+
+        <!-- TITRE -->
+
+        <div>
+
+          <p
+            class="text-xs font-semibold
+                   uppercase tracking-wide
+                   text-gray-500">
+
+            Titre
+
+          </p>
+
+          <h3
+            class="mt-1 text-lg font-semibold
+                   text-gray-900">
+
+            {{ selectedArticle.title }}
+
+          </h3>
+
+        </div>
+
+
+        <!-- STATUT -->
+
+        <div>
+
+          <p
+            class="text-xs font-semibold
+                   uppercase tracking-wide
+                   text-gray-500">
+
+            Statut
+
+          </p>
+
+          <span
+            class="mt-2 inline-flex rounded-full
+                   px-3 py-1 text-xs font-semibold"
+            [ngClass]="
+              getStatusClass(selectedArticle.status)
+            ">
+
+            {{ getStatusLabel(selectedArticle.status) }}
+
+          </span>
+
+        </div>
+
+
+        <!-- AUTEURS -->
+
+        <div>
+
+          <p
+            class="text-xs font-semibold
+                   uppercase tracking-wide
+                   text-gray-500">
+
+            Auteurs
+
+          </p>
+
+          <p class="mt-1 text-gray-700">
+
+            {{ selectedArticle.authors || '-' }}
+
+          </p>
+
+        </div>
+
+
+        <!-- AFFILIATION -->
+
+        <div>
+
+          <p
+            class="text-xs font-semibold
+                   uppercase tracking-wide
+                   text-gray-500">
+
+            Affiliation
+
+          </p>
+
+          <p class="mt-1 text-gray-700">
+
+            {{ selectedArticle.affiliations || '-' }}
+
+          </p>
+
+        </div>
+
+
+        <!-- RÉSUMÉ -->
+
+        <div>
+
+          <p
+            class="text-xs font-semibold
+                   uppercase tracking-wide
+                   text-gray-500">
+
+            Résumé
+
+          </p>
+
+          <p
+            class="mt-2 whitespace-pre-line
+                   leading-7 text-gray-700">
+
+            {{ selectedArticle.abstractText || '-' }}
+
+          </p>
+
+        </div>
+
+
+        <!-- MOTS-CLÉS -->
+
+        <div>
+
+          <p
+            class="text-xs font-semibold
+                   uppercase tracking-wide
+                   text-gray-500">
+
+            Mots-clés
+
+          </p>
+
+          <p class="mt-1 text-gray-700">
+
+            {{ selectedArticle.keywords || '-' }}
+
+          </p>
+
+        </div>
+
+
+        <!-- DATES -->
+
+        <div
+          class="grid grid-cols-1 gap-4
+                 sm:grid-cols-3">
+
+          <div
+            class="rounded-lg bg-gray-50 p-4">
+
+            <p class="text-xs text-gray-500">
+              Soumis le
+            </p>
+
+            <p
+              class="mt-1 font-medium text-gray-900">
+
+              {{ formatDate(selectedArticle.submittedAt) }}
+
+            </p>
+
+          </div>
+
+
+          <div
+            class="rounded-lg bg-gray-50 p-4">
+
+            <p class="text-xs text-gray-500">
+              Dernière modification
+            </p>
+
+            <p
+              class="mt-1 font-medium text-gray-900">
+
+              {{ formatDate(selectedArticle.lastModified) }}
+
+            </p>
+
+          </div>
+
+
+          <div
+            class="rounded-lg bg-gray-50 p-4">
+
+            <p class="text-xs text-gray-500">
+              Publication
+            </p>
+
+            <p
+              class="mt-1 font-medium text-gray-900">
+
+              {{ formatDate(selectedArticle.publishedAt) }}
+
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- PDF -->
+
+        @if (selectedArticle.pdfUrl) {
+
+          <div
+            class="border-t pt-5">
+
+            <button
+              type="button"
+              (click)="openPdf(selectedArticle)"
+              class="rounded-lg bg-indigo-600
+                     px-5 py-2.5 text-sm
+                     font-semibold text-white
+                     hover:bg-indigo-700">
+
+              📄 Ouvrir le PDF
+
+            </button>
+
+          </div>
+
+        }
+
+      </div>
+
+
+      <!-- FOOTER -->
+
+      <div
+        class="flex justify-end border-t
+               px-6 py-4">
+
+        <button
+          type="button"
+          (click)="closeDetails()"
+          class="rounded-lg border
+                 border-gray-300
+                 px-5 py-2.5 text-sm
+                 font-medium text-gray-700
+                 hover:bg-gray-50">
+
+          Fermer
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}
+
+</div>

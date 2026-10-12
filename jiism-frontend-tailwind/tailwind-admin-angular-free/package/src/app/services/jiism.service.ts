@@ -342,4 +342,54 @@ publishArticle(id: number): Observable<any> {
   );
 }
 
+getMyArticles(): Observable<any[]> {
+  return this.http.get<any[]>(
+    `${this.base}/article/my`,
+    this.headers()
+  );
+}
+
+uploadPdf(file: File): Observable<string> {
+
+  const formData = new FormData();
+
+  formData.append('file', file);
+
+  return this.http.post(
+    `${this.base}/files/upload-pdf`,
+    formData,
+    {
+      ...this.headers(),
+      responseType: 'text'
+    }
+  ).pipe(
+    catchError(error => {
+      console.error(
+        'Erreur POST /files/upload-pdf :',
+        error
+      );
+
+      return throwError(() => error);
+    })
+  );
+}
+
+createArticle(article: any): Observable<any> {
+
+  return this.http.post(
+    `${this.base}/article`,
+    article,
+    this.headers()
+  ).pipe(
+    catchError(error => {
+      console.error(
+        'Erreur POST /article :',
+        error
+      );
+
+      return throwError(() => error);
+    })
+  );
+}
+
 }

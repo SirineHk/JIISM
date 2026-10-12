@@ -14,6 +14,7 @@ import { ProfileComponent } from './pages/jiism/profile/profile.component';
 import { EditorDashboardComponent } from './pages/jiism/editor-dashboard/editor-dashboard.component';
 import { EditorAssignmentsComponent } from './pages/jiism/editor-assignments/editor-assignments.component';
 import { EditorArticlesComponent } from './pages/jiism/editor-articles/editor-articles.component';
+import { AuthorArticlesComponent } from './author/author-articles/author-articles.component';
 
 import { roleGuard } from './guards/role.guard';
 import { PublicAnnouncementsComponent } from './pages/jiism/public-announcements/public-announcements.component';
@@ -164,7 +165,7 @@ export const routes: Routes = [
 
       {
         path: 'articles',
-        component: ArticlesComponent,
+        component: AuthorArticlesComponent,
         data: {
           title: 'Mes articles'
         }
