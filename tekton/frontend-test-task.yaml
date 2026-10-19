@@ -1,0 +1,18 @@
+﻿apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: jiism-frontend-test
+  namespace: jiism
+spec:
+  description: "Installe les dépendances et compile le frontend Angular JIISM."
+  workspaces:
+    - name: source
+  steps:
+    - name: build-frontend
+      image: node:22-alpine
+      workingDir: $(workspaces.source.path)/jiism-frontend-tailwind/tailwind-admin-angular-free/package
+      script: |
+        #!/bin/sh
+        set -eu
+        npm ci
+        npm run build

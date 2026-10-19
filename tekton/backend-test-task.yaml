@@ -1,0 +1,18 @@
+﻿apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: jiism-backend-test
+  namespace: jiism
+spec:
+  description: "Compile et teste le backend JIISM avec Maven."
+  workspaces:
+    - name: source
+  steps:
+    - name: test
+      image: maven:3.9-eclipse-temurin-17
+      workingDir: $(workspaces.source.path)/jiism
+      script: |
+        #!/bin/sh
+        set -eu
+        chmod +x ./mvnw
+        ./mvnw -B test

@@ -1,0 +1,49 @@
+
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: jiism-ci
+  namespace: jiism
+spec:
+  description: "CI de JIISM : clone et tests backend/frontend."
+  params:
+    - name: repo-url
+      type: string
+      default: https://github.com/SirineHk/JIISM
+    - name: revision
+      type: string
+      default: main
+  workspaces:
+    - name: shared-workspace
+  tasks:
+    - name: clone-repository
+      taskRef:
+        name: git-clone
+      params:
+        - name: URL
+          value: $(params.repo-url)
+        - name: REVISION
+          value: $(params.revision)
+        - name: DELETE_EXISTING
+          value: "true"
+      workspaces:
+        - name: output
+          workspace: shared-workspace
+
+    - name: test-backend
+      runAfter:
+        - clone-repository
+      taskRef:
+        name: jiism-backend-test
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+
+    - name: test-frontend
+      runAfter:
+        - clone-repository
+      taskRef:
+        name: jiism-frontend-test
+      workspaces:
+        - name: source
+          workspace: shared-workspace
