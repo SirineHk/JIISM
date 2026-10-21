@@ -13,8 +13,9 @@ import java.util.List;
 public class JwtUtil {
 
     // Clé secrète temporaire pour le développement
-    private static final String SECRET =
-            "MaCleSecreteSuperSecuriseePourJwt1234567890!";
+    private static final String SECRET = System.getenv("APP_JWT_SECRET") != null
+        ? System.getenv("APP_JWT_SECRET")
+        : "MaCleSecreteSuperSecuriseePourJwt1234567890!";
 
     // Durée de validité du JWT : 1 jour
     private static final long EXPIRATION_TIME = 86400000;
